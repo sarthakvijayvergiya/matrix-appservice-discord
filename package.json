@@ -4,9 +4,9 @@
   "description": "A bridge between Matrix and Discord",
   "main": "discordas.js",
   "scripts": {
-    "test": "npm run-script build && mocha --opts test/mocha.opts build/test",
+    "test": "npm run-script build && mocha --opts mocha.opts",
     "lint": "tslint --project ./tsconfig.json --type-check -t stylish",
-    "coverage": "istanbul --include-all-sources cover -x build/src/discordas.js _mocha -- build/test/ -R spec",
+    "coverage": "nyc mocha --opts mocha.opts",
     "build": "tsc",
     "start": "npm run-script build && node ./build/src/discordas.js -p 9005 -c config.yaml",
     "getbotlink": "node ./build/tools/addbot.js",
@@ -37,7 +37,7 @@
     "bluebird": "^3.4.7",
     "command-line-args": "^4.0.1",
     "command-line-usage": "^4.0.0",
-    "discord.js": "^11.1.0",
+    "discord.js": "11.2.0",
     "escape-string-regexp": "^1.0.5",
     "js-yaml": "^3.8.1",
     "marked": "^0.3.6",
@@ -57,6 +57,22 @@
     "eslint": "^3.8.1",
     "istanbul": "^0.4.5",
     "mocha": "^3.1.2",
-    "proxyquire": "^1.7.11"
+    "nyc": "^11.4.1",
+    "proxyquire": "^1.7.11",
+    "source-map-support": "^0.5.3",
+    "ts-node": "^4.1.0"
+  },
+  "nyc": {
+    "extension": [
+      ".ts"
+    ],
+    "exclude": [
+      "**/*.d.ts"
+    ],
+    "reporter": [
+      "json",
+      "html"
+    ],
+    "all": true
   }
 }
