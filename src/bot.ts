@@ -195,6 +195,7 @@ export class DiscordBot {
     const mxClient = this.bridge.getClientFactory().getClientAs();
     log.verbose("DiscordBot", `Looking up ${guildId}_${channelId}`);
     const result = await this.LookupRoom(guildId, channelId, event.sender);
+    log.silly("DiscordBot", "LookupRoomResult:" + JSON.stringify(event) + " " + JSON.stringify(result));
     const chan = result.channel;
     const botUser = result.botUser;
     let profile = null;
@@ -206,6 +207,7 @@ export class DiscordBot {
         }
     }
     const embed = this.MatrixEventToEmbed(event, profile, chan);
+    log.silly("DiscordBot", "Got embed:" + JSON.stringify(embed));
     const opts: Discord.MessageOptions = {};
     const hasAttachment = ["m.image", "m.audio", "m.video", "m.file"].indexOf(event.content.msgtype) !== -1;
     if (hasAttachment) {
@@ -217,13 +219,16 @@ export class DiscordBot {
       };
     }
     let msg = null;
-    let hook: Discord.Webhook ;
+    let hook: Discord.Webhook;
     if (botUser) {
       const webhooks = await chan.fetchWebhooks();
       hook = webhooks.filterArray((h) => h.name === "_matrix").pop();
+      log.silly("DiscordBot", "Got webhook:" + JSON.stringify(hook));
+
       // Create a new webhook if none already exists
       try {
         if (!hook) {
+          log.silly("DiscordBot", "Created webhook");
           hook = await chan.createWebhook("_matrix", MATRIX_ICON_URL, "Matrix Bridge: Allow rich user messages");
         }
       } catch (err) {
@@ -232,6 +237,7 @@ export class DiscordBot {
     }
     try {
       if (!botUser) {
+        log.silly("DiscordBot", "Sending embed as basic message.");
         msg = await chan.send(embed.description, opts);
       } else if (hook && !hasAttachment) {
         const hookOpts: Discord.WebhookMessageOptions = {
@@ -525,6 +531,7 @@ export class DiscordBot {
   }
 
   private OnMessage(msg: Discord.Message) {
+    log.silly("DiscordBot", "Got discord message " + JSON.stringify(msg));
     const indexOfMsg = this.sentMessages.indexOf(msg.id);
     if (indexOfMsg !== -1) {
       log.verbose("DiscordBot", "Got repeated message, ignoring.");
@@ -532,11 +539,13 @@ export class DiscordBot {
       return; // Skip *our* messages
     }
     if (msg.author.id === this.bot.user.id) {
+      log.silly("DiscordBot", "msg.author.id === this.bot.user.id so returning");
       // We don't support double bridging.
       return;
     }
     // Update presence because sometimes discord misses people.
     this.UpdateUser(msg.author).then(() => {
+      log.silly("DiscordBot", "Ran this.UpdateUser");
       return this.GetRoomIdsFromChannel(msg.channel).catch((err) => {
         log.verbose("DiscordBot", "No bridged rooms to send message to. Oh well.");
         return null;

@@ -66,6 +66,7 @@ export class MatrixRoomHandler {
 
   public OnEvent (request, context) {
     const event = request.getData();
+    log.silly("MatrixRoomHandler", "Evt: " + JSON.stringify(event));
     if (event.unsigned.age > AGE_LIMIT) {
       log.warn("MatrixRoomHandler", "Skipping event due to age %s > %s", event.unsigned.age, AGE_LIMIT);
       return;
@@ -73,6 +74,7 @@ export class MatrixRoomHandler {
     if (event.type === "m.room.member" && event.content.membership === "invite") {
       this.HandleInvite(event);
     } else if (event.type === "m.room.redaction" && context.rooms.remote) {
+      log.silly("MatrixRoomHandler", "Got Redaction");
       this.discord.ProcessMatrixRedact(event);
     } else if (event.type === "m.room.message" && context.rooms.remote) {
       log.verbose("MatrixRoomHandler", "Got m.room.message event");
