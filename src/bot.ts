@@ -450,6 +450,10 @@ export class DiscordBot {
     const intent = this.bridge.getIntent("@" + id);
     const userStore = this.bridge.getUserStore();
 
+    if(displayName.includes("0000")) {
+        log.error("UpdateUser", "ALERT WE HAVE FOUND A 0000 USER. SEND TRACES TO HALFY");
+    }
+
     return userStore.getRemoteUser(discordUser.id).then((u) => {
       remoteUser = u;
       if (remoteUser === null) {
