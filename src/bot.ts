@@ -12,6 +12,7 @@ import * as log from "npmlog";
 import * as Bluebird from "bluebird";
 import * as mime from "mime";
 import * as path from "path";
+import * as nodeutil from "util";
 
 // Due to messages often arriving before we get a response from the send call,
 // messages get delayed from discord.
@@ -195,7 +196,7 @@ export class DiscordBot {
     const mxClient = this.bridge.getClientFactory().getClientAs();
     log.verbose("DiscordBot", `Looking up ${guildId}_${channelId}`);
     const result = await this.LookupRoom(guildId, channelId, event.sender);
-    log.silly("DiscordBot", "LookupRoomResult:" + JSON.stringify(event) + " " + JSON.stringify(result));
+    log.silly("DiscordBot", "LookupRoomResult:" + nodeutil.inspect(event) + " " + nodeutil.inspect(result));
     const chan = result.channel;
     const botUser = result.botUser;
     let profile = null;
@@ -207,7 +208,7 @@ export class DiscordBot {
         }
     }
     const embed = this.MatrixEventToEmbed(event, profile, chan);
-    log.silly("DiscordBot", "Got embed:" + JSON.stringify(embed));
+    log.silly("DiscordBot", "Got embed:" + nodeutil.inspect(embed));
     const opts: Discord.MessageOptions = {};
     const hasAttachment = ["m.image", "m.audio", "m.video", "m.file"].indexOf(event.content.msgtype) !== -1;
     if (hasAttachment) {
@@ -223,7 +224,7 @@ export class DiscordBot {
     if (botUser) {
       const webhooks = await chan.fetchWebhooks();
       hook = webhooks.filterArray((h) => h.name === "_matrix").pop();
-      log.silly("DiscordBot", "Got webhook:" + JSON.stringify(hook));
+      log.silly("DiscordBot", "Got webhook:" + nodeutil.inspect(hook));
 
       // Create a new webhook if none already exists
       try {
@@ -535,7 +536,7 @@ export class DiscordBot {
   }
 
   private OnMessage(msg: Discord.Message) {
-    log.silly("DiscordBot", "Got discord message " + JSON.stringify(msg));
+    log.silly("DiscordBot", "Got discord message " + nodeutil.inspect(msg));
     const indexOfMsg = this.sentMessages.indexOf(msg.id);
     if (indexOfMsg !== -1) {
       log.verbose("DiscordBot", "Got repeated message, ignoring.");

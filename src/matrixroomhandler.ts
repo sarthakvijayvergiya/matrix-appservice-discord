@@ -12,6 +12,7 @@ import { DiscordBridgeConfig } from "./config";
 import * as Discord from "discord.js";
 import * as log from "npmlog";
 import * as Bluebird from "bluebird";
+import * as nodeutil from "util";
 
 const ICON_URL = "https://matrix.org/_matrix/media/r0/download/matrix.org/mlxoESwIsTbJrfXyAAogrNxA";
 const JOIN_DELAY = 6000;
@@ -66,7 +67,7 @@ export class MatrixRoomHandler {
 
   public OnEvent (request, context) {
     const event = request.getData();
-    log.silly("MatrixRoomHandler", "Evt: " + JSON.stringify(event));
+    log.silly("MatrixRoomHandler", "Evt: " + nodeutil.inspect(event));
     if (event.unsigned.age > AGE_LIMIT) {
       log.warn("MatrixRoomHandler", "Skipping event due to age %s > %s", event.unsigned.age, AGE_LIMIT);
       return;
