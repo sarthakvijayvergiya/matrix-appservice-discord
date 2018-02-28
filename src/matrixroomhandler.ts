@@ -48,7 +48,7 @@ export class MatrixRoomHandler {
   }
 
   public get ThirdPartyLookup(): thirdPartyLookup {
-    return this.tphandler.lookup;
+    return this.tphandler.Lookup;
   }
 
   public setBridge(bridge: Bridge) {
