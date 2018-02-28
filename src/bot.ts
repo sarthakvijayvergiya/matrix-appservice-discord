@@ -107,14 +107,17 @@ export class DiscordBot {
     return this.bot.guilds.array();
   }
 
-  public ThirdpartySearchForChannels(guildId: string, channelName: string): any[] {
+  public SearchForChannels(guildId: string, channelName: string, matchAllOnEmpty: boolean = true): any[] {
     if (channelName.startsWith("#")) {
       channelName = channelName.substr(1);
     }
     if (this.bot.guilds.has(guildId) ) {
       const guild = this.bot.guilds.get(guildId);
       return guild.channels.filter((channel) => {
-        return channel.name.toLowerCase() === channelName.toLowerCase(); // Implement searching in the future.
+        if (channelName === null || channelName === "") {
+          return matchAllOnEmpty;
+        }
+        return channel.name.toLowerCase().startsWith(channelName.toLowerCase());
       }).map((channel) => {
         return {
           alias: `#_discord_${guild.id}_${channel.id}:${this.config.bridge.domain}`,

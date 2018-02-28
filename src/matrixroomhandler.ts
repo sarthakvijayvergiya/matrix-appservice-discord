@@ -4,11 +4,9 @@ import {
   RemoteRoom,
   MatrixRoom,
   thirdPartyLookup,
-  thirdPartyProtocolResult,
-  thirdPartyUserResult,
-  thirdPartyLocationResult,
  } from "matrix-appservice-bridge";
 import { DiscordBridgeConfig } from "./config";
+import { ThirdPartyHandler } from "./thirdpartyhandler";
 
 import * as Discord from "discord.js";
 import * as log from "npmlog";
@@ -38,9 +36,11 @@ const JOIN_ROOM_SCHEDULE = [
 export class MatrixRoomHandler {
 
   private config: DiscordBridgeConfig;
+  private tphandler: ThirdPartyHandler;
   private bridge: Bridge;
   private discord: DiscordBot;
   private botUserId: string;
+
   constructor (discord: DiscordBot, config: DiscordBridgeConfig, botUserId: string, private provisioner: Provisioner) {
     this.discord = discord;
     this.config = config;
@@ -48,14 +48,7 @@ export class MatrixRoomHandler {
   }
 
   public get ThirdPartyLookup(): thirdPartyLookup {
-    return {
-      protocols: ["discord"],
-      getProtocol: this.tpGetProtocol.bind(this),
-      getLocation: this.tpGetLocation.bind(this),
-      parseLocation: this.tpParseLocation.bind(this),
-      getUser: this.tpGetUser.bind(this),
-      parseUser: this.tpParseUser.bind(this),
-    };
+    return this.tphandler.lookup;
   }
 
   public setBridge(bridge: Bridge) {
@@ -281,68 +274,6 @@ export class MatrixRoomHandler {
     });
   }
 
-  public tpGetProtocol(protocol: string): Promise<thirdPartyProtocolResult> {
-    return Promise.resolve({
-      user_fields: ["username", "discriminator"],
-      location_fields: ["guild_id", "channel_name"],
-      field_types: {
-        // guild_name: {
-        //   regexp: "\S.{0,98}\S",
-        //   placeholder: "Guild",
-        // },
-        guild_id: {
-          regexp: "[0-9]*",
-          placeholder: "",
-        },
-        channel_id: {
-          regexp: "[0-9]*",
-          placeholder: "",
-        },
-        channel_name: {
-           regexp: "[A-Za-z0-9_\-]{2,100}",
-           placeholder: "#Channel",
-        },
-        username: {
-          regexp: "[A-Za-z0-9_\-]{2,100}",
-          placeholder: "Username",
-        },
-        discriminator: {
-          regexp: "[0-9]{4}",
-          placeholder: "1234",
-        },
-      },
-      instances: this.discord.GetGuilds().map((guild) => {
-        return {
-          network_id: guild.id,
-          bot_user_id: this.botUserId,
-          desc: guild.name,
-          icon: guild.iconURL || ICON_URL, // TODO: Use icons from our content repo. Potential security risk.
-          fields: {
-            guild_id: guild.id,
-          },
-        };
-      }),
-    });
-  }
-
-  public tpGetLocation(protocol: string, fields: any): Promise<thirdPartyLocationResult[]> {
-    log.info("MatrixRoomHandler", "Got location request ", protocol, fields);
-    const chans = this.discord.ThirdpartySearchForChannels(fields.guild_id, fields.channel_name);
-    return Promise.resolve(chans);
-  }
-
-  public tpParseLocation(alias: string): Promise<thirdPartyLocationResult[]>  {
-    return Promise.reject({err: "Unsupported", code: HTTP_UNSUPPORTED});
-  }
-
-  public tpGetUser(protocol: string, fields: any): Promise<thirdPartyUserResult[]> {
-    log.info("MatrixRoomHandler", "Got user request ", protocol, fields);
-    return Promise.reject({err: "Unsupported", code: HTTP_UNSUPPORTED});
-  }
-
-  public tpParseUser(userid: string): Promise<thirdPartyUserResult[]> {
-    return Promise.reject({err: "Unsupported", code: HTTP_UNSUPPORTED});
-  }
 
   private joinRoom(intent: any, roomIdOrAlias: string): Promise<string> {
       let currentSchedule = JOIN_ROOM_SCHEDULE[0];
