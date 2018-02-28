@@ -45,6 +45,7 @@ export class MatrixRoomHandler {
     this.discord = discord;
     this.config = config;
     this.botUserId = botUserId;
+    this.tphandler = new ThirdPartyHandler(discord, botUserId);
   }
 
   public get ThirdPartyLookup(): thirdPartyLookup {
