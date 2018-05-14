@@ -168,6 +168,18 @@ describe("MatrixEventProcessor", () => {
             }, {avatar_url: "test"}, mockChannel as any);
             Chai.assert.equal(evt.description, "@ here Hello!");
         });
+
+        it("Should format m.emote correctly.", () => {
+            const processor = createMatrixEventProcessor(false, false, true);
+            const evt = processor.EventToEmbed({
+                sender: "@test:localhost",
+                content: {
+                    msgtype: "m.emote",
+                    body: "is testing",
+                },
+            }, {}, mockChannel as any);
+            Chai.assert.equal(evt.description, "\\* *@test:localhost is testing*");
+        });
     });
     describe("FindMentionsInPlainBody", () => {
         it("processes mentioned username correctly", async () => {

@@ -56,10 +56,11 @@ export class MatrixEventProcessor {
             if (!isMarkdown) {
               body = "\\" + body;
             }
-            if (event.content.msgtype === "m.emote") {
-              body = `*${body}*`;
-            }
             */
+            if (event.content.msgtype === "m.emote") {
+              body = `\\* *${profile.displayname} ${body}*`;
+            }
+
             return new Discord.RichEmbed({
                 author: {
                     name: profile.displayname,
