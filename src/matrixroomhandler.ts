@@ -85,7 +85,7 @@ export class MatrixRoomHandler {
   public OnEvent (request, context): Promise<any> {
     const event = request.getData();
     if (event.unsigned.age > AGE_LIMIT) {
-      log.warn("MatrixRoomHandler", "Skipping event due to age %s > %s", event.unsigned.age, AGE_LIMIT);
+      log.verbose("MatrixRoomHandler", "Skipping event due to age %s > %s", event.unsigned.age, AGE_LIMIT);
       return Promise.reject("Event too old");
     }
     if (event.type === "m.room.member" && event.content.membership === "invite") {

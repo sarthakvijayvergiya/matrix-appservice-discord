@@ -54,12 +54,18 @@ function run (port: number, config: DiscordBridgeConfig) {
   const discordbot = new DiscordBot(config, discordstore, provisioner);
   const roomhandler = new MatrixRoomHandler(discordbot, config, botUserId, provisioner);
 
+  function EatPromise(promise: Promise<any>): void {
+      promise.catch((err) => {
+        log.verbose("discordas", `Promise was rejected with ${err}`);
+      });
+  }
+
   const bridge = new Bridge({
     clientFactory,
     controller: {
       // onUserQuery: userQuery,
       onAliasQuery: roomhandler.OnAliasQuery.bind(roomhandler),
-      onEvent: roomhandler.OnEvent.bind(roomhandler),
+      onEvent: (req, ctx) => { EatPromise(roomhandler.OnEvent(req, ctx)); },
       onAliasQueried: roomhandler.OnAliasQueried.bind(roomhandler),
       thirdPartyLookup: roomhandler.ThirdPartyLookup,
       onLog: (line, isError) => {
