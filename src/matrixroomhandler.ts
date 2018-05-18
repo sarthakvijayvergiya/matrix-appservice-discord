@@ -84,8 +84,11 @@ export class MatrixRoomHandler {
 
   public OnEvent (request, context): Promise<any> {
     const event = request.getData();
-    if (event.unsigned.age > AGE_LIMIT) {
-      log.verbose("MatrixRoomHandler", "Skipping event due to age %s > %s", event.unsigned.age, AGE_LIMIT);
+
+    // Note: event.unsigned.age is a joke, given it's usually wrong and sometimes doesn't even appear. Use origin_ts
+    const age = Date.now() - event.origin_server_ts;
+    if (age > AGE_LIMIT) {
+      log.verbose("MatrixRoomHandler", "Skipping event due to age %s > %s", age, AGE_LIMIT);
       return Promise.reject("Event too old");
     }
     if (event.type === "m.room.member" && event.content.membership === "invite") {
