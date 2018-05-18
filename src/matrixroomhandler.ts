@@ -99,7 +99,10 @@ export class MatrixRoomHandler {
       } else if (context.rooms.remote) {
         const srvChanPair = context.rooms.remote.roomId.substr("_discord".length).split("_", ROOM_NAME_PARTS);
         return this.discord.ProcessMatrixMsgEvent(event, srvChanPair[0], srvChanPair[1]).catch((err) => {
-            log.warn("MatrixRoomHandler", "There was an error sending a matrix event", err);
+            log.warn(
+                "MatrixRoomHandler",
+                `Failed to handle m.room.message event ${event.room_id} ${err.message} (${err.name})`, err
+            );
         });
       }
     } else {
