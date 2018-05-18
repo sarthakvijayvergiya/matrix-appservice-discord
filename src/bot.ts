@@ -174,7 +174,12 @@ export class DiscordBot {
     let profile = null;
     if (result.botUser) {
         // We are doing this through webhooks so fetch the user profile.
-        profile = await mxClient.getStateEvent(event.room_id, "m.room.member", event.sender);
+        try {
+            profile = await mxClient.getStateEvent(event.room_id, "m.room.member", event.sender);
+        } catch (e) {
+            log.error("DiscordBot", `Could not fetch state for ${event.room_id} ${event.sender}, ${e.message}`);
+        }
+
         if (profile === null) {
           log.warn("DiscordBot", `User ${event.sender} has no member state. That's odd.`);
         }
