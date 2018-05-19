@@ -135,19 +135,18 @@ describe("MatrixRoomHandler", () => {
     });
     describe("OnEvent", () => {
         it("should reject old events", () => {
-            const AGE = 900001; // 15 * 60 * 1000
+            const AGE = 900000; // 15 * 60 * 1000
             const handler = createRH();
             return expect(handler.OnEvent(
-                buildRequest({unsigned: {age: AGE}}), null))
+                buildRequest({origin_server_ts: Date.now() - AGE}), null))
                 .to.be.rejectedWith("Event too old");
         });
         it("should reject un-processable events", () => {
-            const AGE = 900000; // 15 * 60 * 1000
             const handler = createRH();
             return expect(handler.OnEvent(buildRequest({
                 content: {},
                 type: "m.potato",
-                unsigned: {age: AGE}}), null)).to.be.rejectedWith("Event not processed by bridge");
+                unsigned: {age: Date.now()}}), null)).to.be.rejectedWith("Event not processed by bridge");
         });
         it("should handle invites", () => {
             const handler = createRH();
