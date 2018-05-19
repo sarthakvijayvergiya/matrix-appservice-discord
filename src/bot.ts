@@ -122,7 +122,11 @@ export class DiscordBot {
     if (this.bot.guilds.has(guildId) ) {
       const guild = this.bot.guilds.get(guildId);
       return guild.channels.filter((channel) => {
-        return channel.name.toLowerCase() === channelName.toLowerCase(); // Implement searching in the future.
+        if (channelName === "") {
+            return true;
+        }
+        return channel.name.startsWith(channelName) ||
+               channel.name.includes(channelName); // Implement searching in the future.
       }).map((channel) => {
         return {
           alias: `#_discord_${guild.id}_${channel.id}:${this.config.bridge.domain}`,
