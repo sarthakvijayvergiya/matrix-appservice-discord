@@ -22,6 +22,7 @@ export class Util {
       } else {
         ht = http;
       }
+      log.verbose("Util", `Downloading file "${url}"`);
       const req = ht.get((url), (res) => {
         let buffer = Buffer.alloc(0);
         if (res.statusCode !== HTTP_OK) {
