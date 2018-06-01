@@ -4,7 +4,7 @@
 
 ## Voice Data Protocol (VDP)
 
-The discord bridge receives and transmits voice over a single stream, for all intents and purposes. To that end, the packet protocol can be quite light.
+The discord bridge has one stream for sending, and one for receiving all voice data per channel. So each channel only needs 2 *connections*.
 
 ```json
 {
