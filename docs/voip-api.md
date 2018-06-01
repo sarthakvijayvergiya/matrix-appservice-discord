@@ -18,9 +18,11 @@ Ideally, something like MessagePack would be used since it has native support of
 
 ## Signalling
 
-^1 - A channel in this context is a new or existing UDP address:port combo assigned to one or more rooms that use the VDP protocol.
-^2 - Event Format TBD, but will contain a roomid, format and version information at the very least.
-^3 - Marked would mean the room would have a state flag set, presumably. It's implied that the room will be created if it doesn't exist or either bridge is not in the room.
+1. A channel in this context is a new or existing UDP address:port combo assigned to one or more rooms that use the VDP protocol.
+
+2. Event Format TBD, but will contain a roomid, format and version information at the very least.
+
+3. Marked would mean the room would have a state flag set, presumably. It's implied that the room will be created if it doesn't exist or either bridge is not in the room.
 
 Signalling would be done in a marked ^3 room between the discord bridge and the voice bridge. When the voice bridge starts a new call in a room, it should request the Discord bridge to open a new UDP address:port to send data packets to. The bridge will respond with a address:port (which may or may not be in use already) and in return the voice bridge should share its own address:port combination.
 
