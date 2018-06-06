@@ -4,11 +4,11 @@ import * as Bluebird from "bluebird";
 import * as fs from "fs";
 import { IDbSchema } from "./db/schema/dbschema";
 import { IDbData} from "./db/dbdatainterface";
-const CURRENT_SCHEMA = 7;
+import { IDiscordStore, CURRENT_SCHEMA } from "./istore";
 /**
  * Stores data for specific users and data not specific to rooms.
  */
-export class DiscordStore {
+export class SqliteDiscordStore implements IDiscordStore {
   /**
    * @param  {string} filepath Location of the SQLite database file.
    */
