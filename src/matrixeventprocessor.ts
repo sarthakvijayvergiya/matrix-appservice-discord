@@ -148,7 +148,7 @@ export class MatrixEventProcessor {
                 }
             }
             return;
-        } else if (event.type === "m.room.encryption" && remoteRoom) {
+        } else if (false && event.type === "m.room.encryption" && remoteRoom) {
             await this.HandleEncryptionWarning(event.room_id);
             return;
         }

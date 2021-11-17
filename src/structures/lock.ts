@@ -21,7 +21,7 @@ export class Lock<T> {
             // first we check if the lock has the key....if not, e.g. if it
             // got released too quickly, we still want to resolve our promise
             if (!this.locks.has(key)) {
-                resolve();
+                resolve({});
                 return;
             }
             // create the interval that will release our promise after the timeout
@@ -29,7 +29,7 @@ export class Lock<T> {
                 this.release(key);
             }, this.timeout);
             // aaand store to our lock
-            this.locks.set(key, {r: resolve, i});
+            this.locks.set(key, {r: () => resolve({}), i});
         });
         this.lockPromises.set(key, p);
     }

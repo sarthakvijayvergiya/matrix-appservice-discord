@@ -24,9 +24,9 @@ import { Postgres } from "./db/postgres";
 import { IDatabaseConnector } from "./db/connector";
 import { DbRoomStore } from "./db/roomstore";
 import { DbUserStore } from "./db/userstore";
-import { IAppserviceStorageProvider } from "matrix-bot-sdk";
+import { IAppserviceStorageProvider, IFilterInfo, IStorageProvider } from "matrix-bot-sdk";
 const log = new Log("DiscordStore");
-export const CURRENT_SCHEMA = 11;
+export const CURRENT_SCHEMA = 12;
 /**
  * Stores data for specific users and data not specific to rooms.
  */
@@ -337,4 +337,53 @@ export class DiscordStore implements IAppserviceStorageProvider {
             throw new Error("Couldn't open database. The appservice won't be able to continue.");
         }
     }
+
+    public storageForUser(userId: string): IStorageProvider {
+        return new ChildDiscordStore(this, userId);
+    }
+
+    public kvGet(userId: string, key: string): Promise<string | null | undefined> {
+        return this.db.Get(`SELECT value FROM bsdk_kv WHERE user_id = $userId AND key = $key`, {
+            key: key,
+            userId: userId,
+        }).then(r => r?.['value'] as string);
+    }
+
+    public kvPut(userId: string, key: string, value: string): Promise<any> {
+        return this.db.Run(`INSERT INTO bsdk_kv (user_id, key, value) VALUES ($userId, $key, $value) ON CONFLICT (user_id, key) DO UPDATE SET value = $value`, {
+            key: key,
+            userId: userId,
+            value: value,
+        });
+    }
+}
+
+class ChildDiscordStore implements IStorageProvider {
+    constructor(private parent: DiscordStore, private userId: string) {
+    }
+
+    readValue(key: string): string | Promise<string | null | undefined> | null | undefined {
+        return this.parent.kvGet(this.userId, key);
+    }
+
+    storeValue(key: string, value: string): Promise<any> | void {
+        return this.parent.kvPut(this.userId, key, value);
+    }
+
+    getFilter(): IFilterInfo | Promise<IFilterInfo> {
+        throw new Error("not implemented");
+    }
+
+    getSyncToken(): string | Promise<string | null> | null {
+        throw new Error("not implemented");
+    }
+
+    setFilter(filter: IFilterInfo): Promise<any> | void {
+        throw new Error("not implemented");
+    }
+
+    setSyncToken(token: string | null): Promise<any> | void {
+        throw new Error("not implemented");
+    }
+
 }

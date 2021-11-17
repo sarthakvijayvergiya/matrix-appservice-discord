@@ -27,6 +27,7 @@ import { v4 as uuid } from "uuid";
 import { IMatrixEvent } from "./matrixtypes";
 import { MetricPeg, PrometheusBridgeMetrics } from "./metrics";
 import { Response } from "express";
+import { NamespacingSqliteCryptoStorageProvider } from "matrix-bot-sdk/lib/storage/NamespacingSqliteCryptoStorageProvider";
 
 const log = new Log("DiscordAS");
 
@@ -94,6 +95,8 @@ function setupLogging(): void {
 
     LogService.setLogger({
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        trace: (mod: string, args: any[]) => logFunc("silly", mod, args),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         debug: (mod: string, args: any[]) => logFunc("silly", mod, args),
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         error: (mod: string, args: any[]) => logFunc("error", mod, args),
@@ -154,6 +157,8 @@ async function run(): Promise<void> {
 
     const store = new DiscordStore(config.database);
 
+    const cryptoStore = new NamespacingSqliteCryptoStorageProvider("./discord-crypto.db");
+
     const appservice = new Appservice({
         bindAddress: config.bridge.bindAddress || "0.0.0.0",
         homeserverName: config.bridge.domain,
@@ -161,6 +166,10 @@ async function run(): Promise<void> {
         port,
         registration,
         storage: store,
+        cryptoStorage: cryptoStore,
+        intentOptions: {
+            encryption: true,
+        },
     });
 
     if (config.metrics.enable) {
