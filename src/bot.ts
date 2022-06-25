@@ -365,6 +365,7 @@ export class DiscordBot {
 
     public async LookupRoom(server: string, room: string, sender?: string): Promise<ChannelLookupResult> {
         const hasSender = sender !== null && sender !== undefined;
+        console.log("Sender Print", sender);
         try {
             const client = await this.clientFactory.getClient(sender);
             const guild = client.guilds.resolve(server);
