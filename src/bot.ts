@@ -372,6 +372,7 @@ export class DiscordBot {
             if (!guild) {
                 throw new Error(`Guild "${server}" not found`);
             }
+            console.log("Channels",guild.channels)
             const channel = guild.channels.resolve(room);
             if (channel && channel.type === "text") {
                 if (hasSender) {
