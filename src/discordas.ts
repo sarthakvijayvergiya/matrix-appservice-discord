@@ -224,6 +224,9 @@ async function run(): Promise<void> {
         log.error("Failure during startup. Exiting");
         process.exit(1);
     }
+    appservice.expressAppInstance.get("/health-test", (_, res: Response) => {
+        res.status(200).send("");
+    });
 }
 
 run().catch((err) => {
