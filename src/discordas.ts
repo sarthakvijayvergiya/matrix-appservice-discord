@@ -26,7 +26,7 @@ import * as usage from "command-line-usage";
 import { v4 as uuid } from "uuid";
 import { IMatrixEvent } from "./matrixtypes";
 import { MetricPeg, PrometheusBridgeMetrics } from "./metrics";
-import { Response } from "express";
+import { Request, Response } from "express";
 
 const log = new Log("DiscordAS");
 
@@ -224,7 +224,9 @@ async function run(): Promise<void> {
         log.error("Failure during startup. Exiting");
         process.exit(1);
     }
-    appservice.expressAppInstance.get("/health-test", (_, res: Response) => {
+    appservice.expressAppInstance.get("/health-test/:serverId", (req: Request, res: Response) => {
+        const serverId = req.params.serverId
+        console.log("serverid",serverId)
         res.status(200).send("");
     });
 }
