@@ -224,9 +224,10 @@ async function run(): Promise<void> {
         log.error("Failure during startup. Exiting");
         process.exit(1);
     }
-    appservice.expressAppInstance.get("/health-test/:serverId", (req: Request, res: Response) => {
+    appservice.expressAppInstance.get("/health-test/:serverId", async(req: Request, res: Response) => {
         const serverId = req.params.serverId
         console.log("serverid",serverId)
+        await discordbot.LookupServer(serverId)
         res.status(200).send("");
     });
 }
