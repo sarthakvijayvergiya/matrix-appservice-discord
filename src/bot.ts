@@ -412,12 +412,13 @@ export class DiscordBot {
         if (!guild) {
             throw new Error(`Guild "${server}" not found`);
         }
-        console.log(guild)
+        // console.log(guild)
 
-        
+        console.log("Cache",guild.channels.cache)
+
         guild.channels.cache.forEach((channel: object) => {
-            console.log(channel.id);
-            console.log(channel.name);
+            console.log("Channel",channel);
+            // console.log(channel);
         });
     }
     public async sendAsBot(msg: string, channel: Discord.TextChannel, event: IMatrixEvent): Promise<void> {
