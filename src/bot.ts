@@ -417,7 +417,7 @@ export class DiscordBot {
         console.log("Cache",guild.channels)
 
         guild.channels.cache.forEach((value: object, key: string) => {
-            console.log("Channel",value, key);
+            console.log("Channel",value.id, key);
             // console.log(channel);
         });
     }
