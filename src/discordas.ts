@@ -229,7 +229,7 @@ async function run(): Promise<void> {
         console.log("serverid",serverId)
         var lookupResults = await discordbot.LookupServer(serverId)
         console.log(lookupResults)
-        res.status(200).send("");
+        res.status(200).send(JSON.stringify(lookupResults));
     });
 }
 
