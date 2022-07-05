@@ -51,6 +51,11 @@ class ChannelLookupResult {
     public canSendEmbeds: boolean;
 }
 
+class ServerLookupResult {
+    public channel_id: string;
+    public channel_name: string;
+}
+
 interface IThirdPartyLookupField {
     channel_id: string;
     channel_name: string;
@@ -407,7 +412,11 @@ export class DiscordBot {
         if (!guild) {
             throw new Error(`Guild "${server}" not found`);
         }
-        console.log("Channels",guild.channels)
+        console.log("Channels",typeof guild.channels)
+
+        for (var channel of guild.channels) {
+            console.log("channel", channel);
+        }
     }
     public async sendAsBot(msg: string, channel: Discord.TextChannel, event: IMatrixEvent): Promise<void> {
         if (!msg) {
