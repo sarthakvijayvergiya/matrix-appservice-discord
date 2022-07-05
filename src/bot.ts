@@ -408,15 +408,15 @@ export class DiscordBot {
     public async LookupServer(server: string, sender?: string): Promise<void> {
         console.log("Sender Print", server);
         const client = await this.clientFactory.getClient(sender);
-        const guild = client.guilds.resolve(server);
+        var guild = client.guilds.resolve(server);
         if (!guild) {
             throw new Error(`Guild "${server}" not found`);
         }
         console.log("Channels",typeof guild.channels)
 
-        for (var channel of guild.channels) {
-            console.log("channel", channel);
-        }
+        // for (var channel of guild.channels) {
+        //     console.log("channel", channel);
+        // }
     }
     public async sendAsBot(msg: string, channel: Discord.TextChannel, event: IMatrixEvent): Promise<void> {
         if (!msg) {
