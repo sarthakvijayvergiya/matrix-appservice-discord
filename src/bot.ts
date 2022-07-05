@@ -420,10 +420,12 @@ export class DiscordBot {
         guild.channels.cache.forEach((value: Discord.GuildChannel, key: string) => {
             console.log("Channel",value.id, value.name);
             // console.log(channel);
-            const lookupResult = new ServerLookupResult();
-            lookupResult.channel_id = value.name;
-            lookupResult.channel_name = value.id;
-            lookupResults.push(lookupResult);
+            if(value.parentID){
+                const lookupResult = new ServerLookupResult();
+                lookupResult.channel_id = value.name;
+                lookupResult.channel_name = value.id;
+                lookupResults.push(lookupResult);
+            }
         });
         return lookupResults;
     }
