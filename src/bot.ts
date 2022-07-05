@@ -412,9 +412,8 @@ export class DiscordBot {
         if (!guild) {
             throw new Error(`Guild "${server}" not found`);
         }
-        console.log("Channels",Array.from(guild.channels))
 
-        guild.channels.forEach((channel: Discord.Channels) => {
+        Array.from(guild.channels).forEach((channel: Discord.Channels) => {
             console.log(channel)
         });
     }
