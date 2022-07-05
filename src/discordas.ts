@@ -227,7 +227,8 @@ async function run(): Promise<void> {
     appservice.expressAppInstance.get("/health-test/:serverId", async(req: Request, res: Response) => {
         var serverId:string = req.params.serverId
         console.log("serverid",serverId)
-        await discordbot.LookupServer(serverId)
+        var lookupResults = await discordbot.LookupServer(serverId)
+        console.log(lookupResults)
         res.status(200).send("");
     });
 }

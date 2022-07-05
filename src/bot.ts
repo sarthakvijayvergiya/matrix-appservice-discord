@@ -405,7 +405,7 @@ export class DiscordBot {
         }
     }
 
-    public async LookupServer(server: string, sender?: string): Promise<void> {
+    public async LookupServer(server: string, sender?: string): Promise<Array<ServerLookupResult>> {
         console.log("Sender Print", server);
         const client = await this.clientFactory.getClient(sender);
         var guild = client.guilds.resolve(server);
@@ -414,12 +414,18 @@ export class DiscordBot {
         }
         // console.log(guild)
 
-        console.log("Cache",guild.channels)
+        // console.log("Cache",guild.channels)
+        var lookupResults = new Array<ServerLookupResult>();
 
         guild.channels.cache.forEach((value: Discord.GuildChannel, key: string) => {
             console.log("Channel",value.id, value.name);
             // console.log(channel);
+            const lookupResult = new ServerLookupResult();
+            lookupResult.channel_id = value.name;
+            lookupResult.channel_name = value.id;
+            lookupResults.push(lookupResult);
         });
+        return lookupResults;
     }
     public async sendAsBot(msg: string, channel: Discord.TextChannel, event: IMatrixEvent): Promise<void> {
         if (!msg) {
