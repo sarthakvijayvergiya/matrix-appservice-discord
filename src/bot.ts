@@ -414,7 +414,7 @@ export class DiscordBot {
         }
         console.log("Channels",typeof guild.channels)
 
-        guild.channels.forEach((channel: Discord.GuildChannelManager) => {
+        guild.channels.forEach((channel: Discord.Channels) => {
             console.log(channel)
         });
     }
