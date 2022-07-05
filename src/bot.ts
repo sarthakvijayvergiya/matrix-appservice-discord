@@ -416,7 +416,8 @@ export class DiscordBot {
 
         
         guild.channels.cache.forEach((channel: object) => {
-            console.log(channel)
+            console.log(channel.id);
+            console.log(channel.name);
         });
     }
     public async sendAsBot(msg: string, channel: Discord.TextChannel, event: IMatrixEvent): Promise<void> {
