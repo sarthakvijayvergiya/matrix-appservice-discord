@@ -415,9 +415,9 @@ export class DiscordBot {
         console.log(guild)
 
         
-        // guild.channels.forEach((channel: Discord.GuildChannelManager) => {
-        //     console.log(channel)
-        // });
+        guild.channels.cache.forEach((channel: object) => {
+            console.log(channel)
+        });
     }
     public async sendAsBot(msg: string, channel: Discord.TextChannel, event: IMatrixEvent): Promise<void> {
         if (!msg) {
