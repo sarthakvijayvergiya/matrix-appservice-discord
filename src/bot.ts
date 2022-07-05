@@ -416,10 +416,12 @@ export class DiscordBot {
 
         console.log("Cache",guild.channels)
 
-        guild.channels.cache.forEach((channel: object) => {
-            console.log("Channel",channel);
+        guild.channels.cache.forEach((value: object, key: string) => {
+            console.log("Channel",value, key);
             // console.log(channel);
         });
+
+        myMap.forEach((value: boolean, key: string)
     }
     public async sendAsBot(msg: string, channel: Discord.TextChannel, event: IMatrixEvent): Promise<void> {
         if (!msg) {
