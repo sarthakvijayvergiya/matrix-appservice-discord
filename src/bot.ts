@@ -422,8 +422,8 @@ export class DiscordBot {
             // console.log(channel);
             if(value.parentID){
                 const lookupResult = new ServerLookupResult();
-                lookupResult.channel_id = value.name;
-                lookupResult.channel_name = value.id;
+                lookupResult.channel_id = value.id;
+                lookupResult.channel_name = value.name;
                 lookupResults.push(lookupResult);
             }
         });
