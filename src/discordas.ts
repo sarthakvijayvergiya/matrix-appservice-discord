@@ -224,7 +224,7 @@ async function run(): Promise<void> {
         log.error("Failure during startup. Exiting");
         process.exit(1);
     }
-    appservice.expressAppInstance.get("/health-test/:serverId", async(req: Request, res: Response) => {
+    appservice.expressAppInstance.get("/discord/server/:serverId/channels", async(req: Request, res: Response) => {
         var serverId:string = req.params.serverId
         console.log("serverid",serverId)
         var lookupResults = await discordbot.LookupServer(serverId)
